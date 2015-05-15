@@ -1,7 +1,7 @@
 {
     "name": "mosedu/yii2-multirows",
     "type": "yii2-extension",
-    "description": "Widget to show dynamicaly add new form rows with model fields.",
+    "description": "Widget to show dynamicaly add new form rows with model fields. Now stable.",
     "keywords": ["Yii2", "widget", "multirows", "dynamic"],
     "license": "MIT",
     "authors": [
