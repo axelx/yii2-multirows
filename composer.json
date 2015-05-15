@@ -1,6 +1,9 @@
 {
     "name": "mosedu/yii2-multirows",
     "type": "yii2-extension",
+    "description": "Widget to show dinamicaly add new form rows with madel fields.",
+    "keywords": ["Yii2", "widget", "multirows"],
+    "license": "MIT",
     "autoload": {
         "psr-4" : {
             "mosedu\\multirows\\" : "src"
