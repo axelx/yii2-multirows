@@ -19,7 +19,9 @@ class MultirowsAsset extends AssetBundle
     public $js = [
         'js/multirows.js',
     ];
-    
+
+    public $publishOptions = [ 'forceCopy' => true, ];
+
     public function init()
     {
         $this->sourcePath = __DIR__ . DIRECTORY_SEPARATOR . 'assets';
