@@ -1,0 +1,9 @@
+{
+    "name": "mosedu/yii2-multirows",
+    "type": "yii2-extension",
+    "autoload": {
+        "psr-4" : {
+            "mosedu\\multirows" : "src"
+        }
+    }
+}
