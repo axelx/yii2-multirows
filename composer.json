@@ -3,7 +3,7 @@
     "type": "yii2-extension",
     "autoload": {
         "psr-4" : {
-            "mosedu\\multirows" : "src"
+            "mosedu\\multirows\\" : "src"
         }
     }
 }
