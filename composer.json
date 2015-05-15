@@ -4,6 +4,13 @@
     "description": "Widget to show dinamicaly add new form rows with madel fields.",
     "keywords": ["Yii2", "widget", "multirows"],
     "license": "MIT",
+    "authors": [
+    {
+        "name": "Victor Kozmin",
+        "email": "promcalc@gmail.com",
+        "homepage": "http://zeltorg.ru/"
+    }
+    ], 
     "autoload": {
         "psr-4" : {
             "mosedu\\multirows\\" : "src"
