@@ -17,8 +17,19 @@ function Multirow(param) {
         oAddLink = jQuery(param.addlinkselector),
         nMaxIndex = 0,
         sReg = "^" + param.model + "\\[([^\\]]+)\\]\\[?([^\\]\\[]+)\\]?",
+//        sReg = "^" + param.model + "\\[([^\\]]+)\\]\\[?([\\w]+)\\]?",
         modelreg = new RegExp(sReg),
-        baseAttributes = [];
+        baseAttributes = [],
+        getBaseAttr = function(arr, id) {
+            var oRet = null;
+            for(var i in arr) {
+                if( arr[i].id == id ) {
+                    oRet = arr[i];
+                    break;
+                }
+            }
+            return oRet;
+        };
     if( Multirow.nMaxIndex === undefined ) {
         Multirow.nMaxIndex = 0;
     }
@@ -34,6 +45,8 @@ function Multirow(param) {
                 id = oField.attr('id'),
                 a = modelreg.exec(sName),
                 nIndex = (a.length > 1) ? parseInt(a[1]) : -1;
+
+            modelreg.lastIndex = 0;
 
             if( Multirow.nMaxIndex < nIndex ) {
                 Multirow.nMaxIndex = nIndex;
@@ -55,7 +68,6 @@ function Multirow(param) {
 
             }
 
-            modelreg.lastIndex = 0;
         });
         if( nRowIndex != -1 ) {
             oRow.hide();
@@ -67,6 +79,7 @@ function Multirow(param) {
         .off("click")
         .on("click", function(event){
             event.preventDefault;
+//            console.log("baseAttributes: ", baseAttributes);
             if( templareRow === null ) {
                 console.log("Error: not found template row");
                 return;
@@ -74,6 +87,7 @@ function Multirow(param) {
             var oNew = templareRow.clone(),
                 aFields = oNew.find( "[name^='" + param.model + "[']");
             Multirow.nMaxIndex++;
+
             aFields.each( function(index, el){
                 var oField = jQuery(this),
                     sName = oField.attr('name'),
@@ -81,20 +95,39 @@ function Multirow(param) {
                     id = oField.attr('id'),
                     newId = (id !== undefined) ? id.replace(new RegExp(sIdRegexp), "$1-" + Multirow.nMaxIndex + "-") : "",
                     a = modelreg.exec(sName),
-                    nIndex = (a.length > 1) ? parseInt(a[1]) : -1;
+                    nIndex = (a.length > 1) ? parseInt(a[1]) : -1,
+                    sFieldName = (a.length > 2) ? a[2] : "";
 
                 oField.attr('name', sNewName);
-                console.log("Add: name = " + sName + " -> " + sNewName);
+                console.log("Add: name = " + sName + " -> " + sNewName + " sFieldName = " + sFieldName);
                 if( typeof id === 'undefined' ) {
                     return;
                 }
                 oField.attr('id', newId);
+
                 console.log("Add: id = " + id + " -> " + newId);
+                var oAttr = getBaseAttr(baseAttributes, id);
+                if( oAttr === false ) {
+                    console.log("Not found form data for id = " + id);
+                    return;
+                }
+                console.log("Find: ", oAttr);
+                var oNewAttr = jQuery.extend(
+                    {},
+                    oAttr,
+                    {
+                        id: newId,
+                        input: "#" + newId,
+                        name: "[" + Multirow.nMaxIndex + "]" + sFieldName,
+                        container: oAttr.container.replace(new RegExp(sIdRegexp.substr(1)), "$1-" + Multirow.nMaxIndex + "-")
+                    }
+                );
+                oField.parents(oAttr.container).removeClass(oAttr.container.substr(1)).addClass(oNewAttr.container.substr(1));
+                console.log("Add: ", oNewAttr);
+                obForm.yiiActiveForm('add', oNewAttr);
 
                 modelreg.lastIndex = 0;
             });
-
-
 
             aRows.last().after(oNew);
             oNew.show();
