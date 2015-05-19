@@ -29,7 +29,38 @@ function Multirow(param) {
                 }
             }
             return oRet;
+        },
+        setDeleteLinkProp = function(oLink, index) {
+            oLink
+                .attr("id", param.model + "_" + index + "_")
+                .on("click", function(event) {
+                    event.preventDefault
+                    var sId = jQuery(this).attr("id"),
+                        formdata = obForm.data().yiiActiveForm,
+                        settings = formdata['settings'],
+                        aAttributes = formdata['attributes'],
+                        regExp = new RegExp('^' + sId);
+                    //                    console.log("Delete Id = " + sId + " aRows.length = " + aRows.length);
+
+                    for(i = 0, nMax = aAttributes.length; i < nMax; i++) {
+                        regExp.lastIndex = 0;
+                        if( regExp.test(aAttributes[i].id) ) {
+                            obForm.yiiActiveForm('remove', sId);
+                            //                            aAttributes.splice(i, 1);
+                            nMax -= 1;
+                            i -= 1;
+                        }
+                    }
+
+                    jQuery(this).parents(rowSelector).first().remove();
+                    if( ('afterDelete' in param) && param.afterDelete ) {
+                        param.afterDelete();
+                    }
+                    aRows = getAllRows();
+                    return false;
+                });
         };
+
     if( Multirow.nMaxIndex === undefined ) {
         Multirow.nMaxIndex = 0;
     }
@@ -107,7 +138,7 @@ function Multirow(param) {
 
                 console.log("Add: id = " + id + " -> " + newId);
                 var oAttr = getBaseAttr(baseAttributes, id);
-                if( oAttr === false ) {
+                if( oAttr === null ) {
                     console.log("Not found form data for id = " + id);
                     return;
                 }
@@ -130,6 +161,15 @@ function Multirow(param) {
             });
 
             aRows.last().after(oNew);
+
+            setDeleteLinkProp(
+                oNew.find(param.dellinkselector),
+                Multirow.nMaxIndex
+            );
+            if( param.afterInsert ) {
+                param.afterInsert(oNew);
+            }
+
             oNew.show();
 
             aRows = getAllRows();
