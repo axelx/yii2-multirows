@@ -64,7 +64,9 @@ function Multirow(param) {
     if( Multirow.nMaxIndex === undefined ) {
         Multirow.nMaxIndex = 0;
     }
+
     console.log(sNameRegexp, sIdRegexp);
+    jQuery("<input>").attr({type: "hidden", name: param.model + "[" + param.excluderow + "][]"}).val(startindex).appendTo(obForm);
 
     aRows.each(function(index) {
         var oRow = jQuery(this),

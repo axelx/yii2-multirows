@@ -86,6 +86,11 @@ class MultirowsWidget extends Widget
      */
     private  $nStartGroupRow = 0;
 
+    /**
+     * @var string
+     */
+    private  $excludeRowsField = 'templatenum';
+
     public function init()
     {
         if ( $this->model === null ) {
@@ -180,6 +185,7 @@ jQuery(function($) {
         addlinkselector: "{$this->addlinkselector}",
         dellinkselector: "{$this->dellinkselector}",
         formselector: "{$this->formselector}",
+        excluderow: "{$this->excludeRowsField}",
         afterInsert: {$this->afterInsert},
         afterDelete: {$this->afterDelete},
         canDeleteLastRow: {$sDel}
