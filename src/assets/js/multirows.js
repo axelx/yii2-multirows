@@ -40,11 +40,13 @@ function Multirow(param) {
                         settings = formdata['settings'],
                         aAttributes = formdata['attributes'],
                         regExp = new RegExp('^' + sId);
-                    //                    console.log("Delete Id = " + sId + " aRows.length = " + aRows.length);
+
+                    console.log("Delete Id = " + sId + " aRows.length = " + aRows.length);
 
                     for(i = 0, nMax = aAttributes.length; i < nMax; i++) {
                         regExp.lastIndex = 0;
                         if( regExp.test(aAttributes[i].id) ) {
+                            console.log("Remuve field: " + aAttributes[i].id);
                             obForm.yiiActiveForm('remove', sId);
                             //                            aAttributes.splice(i, 1);
                             nMax -= 1;
@@ -66,12 +68,14 @@ function Multirow(param) {
     }
 
     console.log(sNameRegexp, sIdRegexp);
+    // скрытое поле под индексы шаблонных строк, которые не нужно валидировать и сохранять
     jQuery("<input>").attr({type: "hidden", name: param.model + "[" + param.excluderow + "][]"}).val(startindex).appendTo(obForm);
 
     aRows.each(function(index) {
         var oRow = jQuery(this),
             aFields = oRow.find( "[name^='" + param.model + "[']"),
-            nRowIndex = -1;
+            nRowIndex = -1,
+            count = -1;
         aFields.each( function(index, el){
             var oField = jQuery(this),
                 sName = oField.attr('name'),
@@ -79,6 +83,9 @@ function Multirow(param) {
                 a = modelreg.exec(sName),
                 nIndex = (a.length > 1) ? parseInt(a[1]) : -1;
 
+            if(a.length > 1 ) {
+                count = nIndex;
+            }
             modelreg.lastIndex = 0;
 
             if( Multirow.nMaxIndex < nIndex ) {
@@ -105,6 +112,12 @@ function Multirow(param) {
         if( nRowIndex != -1 ) {
             oRow.hide();
             templareRow = oRow;
+        }
+        else {
+            var ob = oRow.find(param.dellinkselector);
+            if( (ob.length > 0) && (count > 0) ) {
+                setDeleteLinkProp(ob, count);
+            }
         }
     });
 

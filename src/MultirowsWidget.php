@@ -89,7 +89,12 @@ class MultirowsWidget extends Widget
     /**
      * @var string
      */
-    private  $excludeRowsField = 'templatenum';
+    public  $excludeRowsField = 'templatenum';
+
+    /**
+     * @var mixed
+     */
+    public  $additionalData = null;
 
     public function init()
     {
@@ -165,6 +170,7 @@ class MultirowsWidget extends Widget
                                   'index' => self::$rowindex, //$k,
                                   'model' => $v,
                                   'form' => $this->form,
+                                  'additionalData' => $this->additionalData,
                               )
             );
             $sRet .= Html::endTag($this->tag);

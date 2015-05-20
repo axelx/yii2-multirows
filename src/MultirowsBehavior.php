@@ -78,4 +78,38 @@ class MultirowsBehavior extends Behavior {
         return $result;
 
     }
+
+    public function getData() {
+        $sClass = $this->model;
+        $model = new $sClass();
+        $sForm = $model->formName();
+
+        $a = Yii::$app->request->post();
+        if( isset($a[$sForm]) ) {
+            if( isset($a[$sForm][$this->excludeRowsField]) ) {
+                foreach($a[$sForm][$this->excludeRowsField] As $v) {
+                    if( isset($a[$sForm][$v]) ) {
+                        Yii::info('Unlink a['.$sForm.'][' . $v . '] = ' . print_r($a[$sForm][$v], true));
+                        unset($a[$sForm][$v]);
+                    }
+                }
+                unset($a[$sForm][$this->excludeRowsField]);
+            }
+        }
+
+//        Yii::info('actionValidate('.$id.') : [2] a = ' . print_r($a, true));
+        $result = [];
+
+        foreach ($a[$sForm] as $k => $v) {
+            $model->load($v, '');
+            $model->validate();
+            if( $model->hasErrors() ) {
+                $result[$k] = $model->getErrors();
+            }
+        }
+//        Yii::info('actionValidate('.$id.'): return ' . print_r($result, true));
+        return ['data' => $a[$sForm], 'error' => $result];
+
+    }
+
 }
