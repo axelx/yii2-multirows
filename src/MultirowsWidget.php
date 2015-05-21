@@ -201,7 +201,8 @@ jQuery(function($) {
 EOT;
         MultirowsAsset::register($view);
 
-        $view->registerJs($sJs, View::POS_READY, 'multirow-' . $sModelKey);
+        $view->registerJs($sJs, View::POS_LOAD, 'multirow-' . $sModelKey);
+//        $view->registerJs($sJs, View::POS_READY, 'multirow-' . $sModelKey);
 
         return $sRet;
     }
