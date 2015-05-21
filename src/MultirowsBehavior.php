@@ -112,4 +112,8 @@ class MultirowsBehavior extends Behavior {
 
     }
 
+    public function makeError($model, $attribute, $error, $index = null) {
+        return [Html::getInputId($model, ($index !== null ? "[{$index}]" : '') . $attribute) => $errors];
+    }
+
 }
