@@ -31,7 +31,7 @@ function Multirow(param) {
             return oRet;
         },
         setDeleteLinkProp = function(oLink, index) {
-            console.log("setDeleteLinkProp: [" + index + "] ", oLink);
+//            console.log("setDeleteLinkProp: [" + index + "] ", oLink);
             oLink
                 .attr("id", param.model + "_" + index + "_")
                 .on("click", function(event) {

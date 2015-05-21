@@ -96,6 +96,12 @@ class MultirowsWidget extends Widget
      */
     public  $additionalData = null;
 
+    /**
+     * jscript part adding to result javascript
+     * @var mixed
+     */
+    public  $script = '';
+
     public function init()
     {
         if ( $this->model === null ) {
@@ -197,6 +203,7 @@ jQuery(function($) {
         afterDelete: {$this->afterDelete},
         canDeleteLastRow: {$sDel}
     });
+    {$this->script}
 });
 EOT;
         MultirowsAsset::register($view);
