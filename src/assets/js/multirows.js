@@ -5,7 +5,7 @@
  */
 
 function Multirow(param) {
-    console.log(jQuery(param.formselector).data().yiiActiveForm.attributes);
+//    console.log(jQuery(param.formselector).data().yiiActiveForm.attributes);
     var rowSelector = "." + param.rowclass,
         startindex = param.startindex,
         obForm = jQuery(param.formselector),
@@ -31,6 +31,7 @@ function Multirow(param) {
             return oRet;
         },
         setDeleteLinkProp = function(oLink, index) {
+            console.log("setDeleteLinkProp: [" + index + "] ", oLink);
             oLink
                 .attr("id", param.model + "_" + index + "_")
                 .on("click", function(event) {
@@ -41,12 +42,12 @@ function Multirow(param) {
                         aAttributes = formdata['attributes'],
                         regExp = new RegExp('^' + sId);
 
-                    console.log("Delete Id = " + sId + " aRows.length = " + aRows.length);
+//                    console.log("Delete Id = " + sId + " aRows.length = " + aRows.length);
 
                     for(i = 0, nMax = aAttributes.length; i < nMax; i++) {
                         regExp.lastIndex = 0;
                         if( regExp.test(aAttributes[i].id) ) {
-                            console.log("Remuve field: " + aAttributes[i].id);
+//                            console.log("Remuve field: " + aAttributes[i].id);
                             obForm.yiiActiveForm('remove', sId);
                             //                            aAttributes.splice(i, 1);
                             nMax -= 1;
@@ -67,7 +68,7 @@ function Multirow(param) {
         Multirow.nMaxIndex = 0;
     }
 
-    console.log(sNameRegexp, sIdRegexp);
+//    console.log("Regexp name & id: ", sNameRegexp, sIdRegexp);
     // скрытое поле под индексы шаблонных строк, которые не нужно валидировать и сохранять
     jQuery("<input>").attr({type: "hidden", name: param.model + "[" + param.excluderow + "][]"}).val(startindex).appendTo(obForm);
 
@@ -98,12 +99,12 @@ function Multirow(param) {
 
             if( nIndex == startindex ) {
                 nRowIndex = nIndex;
-                console.log("Start row el["+startindex+"]: name = " + sName + " id = " + id, a);
+//                console.log("Start row el["+startindex+"]: name = " + sName + " id = " + id, a);
                 var formAttr = obForm.yiiActiveForm('find', id);
                 if( formAttr ) {
                     baseAttributes.push(formAttr);
                     obForm.yiiActiveForm('remove', id);
-                    console.log("Add base: " + id);
+//                    console.log("Add base: " + id);
                 }
 
             }
@@ -145,19 +146,19 @@ function Multirow(param) {
                     sFieldName = (a.length > 2) ? a[2] : "";
 
                 oField.attr('name', sNewName);
-                console.log("Add: name = " + sName + " -> " + sNewName + " sFieldName = " + sFieldName);
+//                console.log("Add: name = " + sName + " -> " + sNewName + " sFieldName = " + sFieldName);
                 if( typeof id === 'undefined' ) {
                     return;
                 }
                 oField.attr('id', newId);
 
-                console.log("Add: id = " + id + " -> " + newId);
+//                console.log("Add: id = " + id + " -> " + newId);
                 var oAttr = getBaseAttr(baseAttributes, id);
                 if( oAttr === null ) {
-                    console.log("Not found form data for id = " + id);
+//                    console.log("Not found form data for id = " + id);
                     return;
                 }
-                console.log("Find: ", oAttr);
+//                console.log("Find: ", oAttr);
                 var oNewAttr = jQuery.extend(
                     {},
                     oAttr,
@@ -169,7 +170,7 @@ function Multirow(param) {
                     }
                 );
                 oField.parents(oAttr.container).removeClass(oAttr.container.substr(1)).addClass(oNewAttr.container.substr(1));
-                console.log("Add: ", oNewAttr);
+//                console.log("Add: ", oNewAttr);
                 obForm.yiiActiveForm('add', oNewAttr);
 
                 modelreg.lastIndex = 0;
@@ -191,158 +192,4 @@ function Multirow(param) {
             return false;
         });
 
-/*
-     setDeleteLinkProp = function(oLink, index) {
-     oLink
-     .attr("id", param.model + "_" + index + "_")
-     .on("click", function(event) {
-     event.preventDefault
-     var sId = jQuery(this).attr("id"),
-     formdata = obForm.data().yiiActiveForm,
-     settings = formdata['settings'],
-     aAttributes = formdata['attributes'],
-     regExp = new RegExp('^' + sId);
-     //                    console.log("Delete Id = " + sId + " aRows.length = " + aRows.length);
-
-     for(i = 0, nMax = aAttributes.length; i < nMax; i++) {
-     regExp.lastIndex = 0;
-     if( regExp.test(aAttributes[i].id) ) {
-     obForm.yiiActiveForm('remove', sId);
-     //                            aAttributes.splice(i, 1);
-     nMax -= 1;
-     i -= 1;
-     }
-     }
-
-     jQuery(this).parents(rowSelector).first().remove();
-     if( ('afterDelete' in param) && param.afterDelete ) {
-     param.afterDelete();
-     }
-     aRows = getAllRows();
-     return false;
-     });
-     },
-
-     findAttrByName = function(name) {
-     var sTempl = "]" + name,
-     nLen = sTempl.length;
-
-     for(var i in baseAttributes) {
-     if( baseAttributes[i].name.substr(-nLen) == sTempl ) {
-     return baseAttributes[i];
-     }
-     }
-     return null;
-     },
-     */
-
-/*
-    aRows.each(function(index) {
-        var ob = jQuery(this),
-            oField = ob.find( "[name^='" + param.model + "']").first(),
-            sName = oField.attr('name'),
-            a = modelreg.exec(sName),
-            nIndex = parseInt(a[1]);
-
-        modelreg.lastIndex = 0;
-
-        if( nMaxIndex < nIndex ) {
-            nMaxIndex = nIndex;
-        }
-
-        if( index == 0 ) {
-            ob.hide();
-        }
-        else {
-            setDeleteLinkProp(
-                ob.find(param.dellinkselector),
-                nIndex
-            );
-
-        }
-    });
-
-    oAddLink
-        .off("click")
-        .on("click", function(event){
-            event.preventDefault;
-
-            var formdata = jQuery(param.formselector).data().yiiActiveForm,
-                settings = formdata['settings'],
-                aAttributes = formdata['attributes'],
-                sTemplate = param.model + '-0-',
-                regExp = new RegExp('^' + sTemplate, "i");
-
-            aRows = getAllRows();
-
-            for(i = 0, nMax = aAttributes.length; i < nMax; i++) {
-                regExp.lastIndex = 0;
-                if( regExp.test(aAttributes[i].id) ) {
-                    baseAttributes.push(aAttributes.splice(i, 1)[0]);
-                    nMax -= 1;
-                    i -= 1;
-                }
-            }
-
-            var oNew = aRows.first().clone(),
-                aFields = oNew.find("[name^='" + param.model + "']");
-            nMaxIndex += 1;
-
-            aFields.each(function(index){
-                var ob = jQuery(this),
-                    sName = ob.attr('name'),
-                    sId = ob.attr('id'),
-                    a = modelreg.exec(sName),
-                    nIndex = parseInt(a[1]),
-                    sField = a[2],
-                    sNewName = param.model + "[" + nMaxIndex + "][" + sField + "]",
-                    sNewId = param.model.toLowerCase() + "-" + nMaxIndex + "-" + sField,
-                    oAttr = findAttrByName(sField),
-                    sNewContainer;
-//                console.log("attr " + sField + " = ", oAttr);
-                sNewContainer = oAttr.container.replace("-0-", "-" + nMaxIndex + "-");
-
-                ob
-                    .attr("name", sNewName)
-                    .attr("id", sNewId)
-                    .parents(oAttr.container + ":first")
-                    .removeClass(oAttr.container.substr(1))
-                    .addClass(sNewContainer.substr(1));
-                oNew
-                    .find( "[for='" + sId + "']")
-                    .attr("for", sNewId);
-                oNew
-                    .find( "#" + sId + "_em_")
-                    .attr("id", sNewId + "_em_");
-
-                var oField = {
-                    'id': sNewId,
-                    'input': "#" + sNewId,
-                    'container': sNewContainer,
-                    'name': '[' + nMaxIndex + ']' + sField,
-                    'status': 1
-                };
-
-                aAttributes.push(
-                    jQuery.extend(
-                        {},
-                        oAttr,
-                        oField
-                    )
-                );
-            });
-            aRows.last().after(oNew);
-            oNew.show();
-            setDeleteLinkProp(
-                oNew.find(param.dellinkselector),
-                nMaxIndex
-            );
-            if( param.afterInsert ) {
-                param.afterInsert(oNew);
-            }
-
-            aRows = getAllRows();
-            return false;
-        });
-*/
 }
