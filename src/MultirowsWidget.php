@@ -168,6 +168,7 @@ class MultirowsWidget extends Widget
                           $this->rowview,
                               array(
                                   'index' => self::$rowindex, //$k,
+                                  'startindex' => $this->nStartGroupRow,
                                   'model' => $v,
                                   'form' => $this->form,
                                   'additionalData' => $this->additionalData,
