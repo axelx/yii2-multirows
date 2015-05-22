@@ -40,9 +40,14 @@ class MultirowsBehavior extends Behavior {
     public $model = null;
 
     /**
+     * @var string model primary key name
+     */
+    public $pk = null;
+
+    /**
      * @var string
      */
-    private  $excludeRowsField = 'templatenum';
+    public $excludeRowsField = 'templatenum';
 
     public function validateData() {
 //        Yii::$app->response->format = Response::FORMAT_JSON;
@@ -64,14 +69,25 @@ class MultirowsBehavior extends Behavior {
             }
         }
 
+        Yii::info('actionValidate() : this->pk = ' . $this->pk);
 //        Yii::info('actionValidate('.$id.') : [2] a = ' . print_r($a, true));
         $result = [];
 
         foreach ($a[$sForm] as $k => $v) {
-            $model->load($v, '');
-            $model->validate();
-            foreach ($model->getErrors() as $attribute => $errors) {
-                $result[Html::getInputId($model, "[$k]" . $attribute)] = $errors;
+            $ob = null;
+            Yii::info('actionValidate() : v = ' . print_r($v, true));
+            if( ($this->pk !== null) && isset($v[$this->pk]) ) {
+                $ob = $model->findOne($v[$this->pk]);
+                Yii::info('actionValidate() : find['.$v[$this->pk].'] = ' . ($ob ? print_r($ob->attributes, true) : 'null'));
+            }
+            if( $ob === null ) {
+                $ob = $model;
+                Yii::info('actionValidate() : new model');
+            }
+            $ob->load($v, '');
+            $ob->validate();
+            foreach ($ob->getErrors() as $attribute => $errors) {
+                $result[Html::getInputId($ob, "[$k]" . $attribute)] = $errors;
             }
         }
 //        Yii::info('actionValidate('.$id.'): return ' . print_r($result, true));
