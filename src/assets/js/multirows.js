@@ -176,12 +176,17 @@ function Multirow(param) {
                 modelreg.lastIndex = 0;
             });
 
+            if( param.beforeInsert ) {
+                param.beforeInsert(oNew);
+            }
+
             aRows.last().after(oNew);
 
             setDeleteLinkProp(
                 oNew.find(param.dellinkselector),
                 Multirow.nMaxIndex
             );
+
             if( param.afterInsert ) {
                 param.afterInsert(oNew);
             }

@@ -52,6 +52,11 @@ class MultirowsWidget extends Widget
     public $formselector = '';
 
     /**
+     * @var string js function to execute before insert new row, function($newRowObgect)
+     */
+    public $beforeInsert = null;
+
+    /**
      * @var string js function to execute after insert new row, function($newRowObgect)
      */
     public $afterInsert = null;
@@ -101,6 +106,12 @@ class MultirowsWidget extends Widget
      * @var mixed
      */
     public  $script = '';
+
+    /**
+     * param for views
+     * @var mixed
+     */
+    public  $viewparam = '';
 
     public function init()
     {
@@ -178,16 +189,20 @@ class MultirowsWidget extends Widget
                                   'model' => $v,
                                   'form' => $this->form,
                                   'additionalData' => $this->additionalData,
+                                  'viewparam' => $this->viewparam,
                               )
             );
             $sRet .= Html::endTag($this->tag);
             self::$rowindex++;
         }
 
+        if ( empty($this->beforeInsert) ) {
+            $this->beforeInsert = 'null';
+        }
         if ( empty($this->afterInsert) ) {
             $this->afterInsert = 'null';
         }
-        $sDel = $this->canDeleteLastRow ? 'true' : 'false'; 
+        $sDel = $this->canDeleteLastRow ? 'true' : 'false';
 
         $sJs = <<<EOT
 jQuery(function($) {
@@ -199,6 +214,7 @@ jQuery(function($) {
         dellinkselector: "{$this->dellinkselector}",
         formselector: "{$this->formselector}",
         excluderow: "{$this->excludeRowsField}",
+        beforeInsert: {$this->beforeInsert},
         afterInsert: {$this->afterInsert},
         afterDelete: {$this->afterDelete},
         canDeleteLastRow: {$sDel}
