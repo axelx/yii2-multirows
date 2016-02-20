@@ -49,6 +49,16 @@ class MultirowsBehavior extends Behavior {
      */
     public $excludeRowsField = 'templatenum';
 
+    /**
+     * @var array default attributes for new created objects
+     */
+    public $defaultattributes = array();
+
+    /**
+     * @var string scenario name for slave records.
+     */
+    public $scenario = null;
+
     public function validateData() {
 //        Yii::$app->response->format = Response::FORMAT_JSON;
 
@@ -61,7 +71,7 @@ class MultirowsBehavior extends Behavior {
             if( isset($a[$sForm][$this->excludeRowsField]) ) {
                 foreach($a[$sForm][$this->excludeRowsField] As $v) {
                     if( isset($a[$sForm][$v]) ) {
-                        Yii::info('Unlink a['.$sForm.'][' . $v . '] = ' . print_r($a[$sForm][$v], true));
+                        Yii::trace('Unlink a['.$sForm.'][' . $v . '] = ' . print_r($a[$sForm][$v], true));
                         unset($a[$sForm][$v]);
                     }
                 }
@@ -69,20 +79,26 @@ class MultirowsBehavior extends Behavior {
             }
         }
 
-        Yii::info('actionValidate() : this->pk = ' . $this->pk);
-//        Yii::info('actionValidate('.$id.') : [2] a = ' . print_r($a, true));
+        Yii::trace('actionValidate() : this->pk = ' . $this->pk);
+//        Yii::trace('actionValidate('.$id.') : [2] a = ' . print_r($a, true));
         $result = [];
 
         foreach ($a[$sForm] as $k => $v) {
             $ob = null;
-            Yii::info('actionValidate() : v = ' . print_r($v, true));
+            Yii::trace('actionValidate() : v = ' . print_r($v, true));
             if( ($this->pk !== null) && isset($v[$this->pk]) ) {
                 $ob = $model->findOne($v[$this->pk]);
-                Yii::info('actionValidate() : find['.$v[$this->pk].'] = ' . ($ob ? print_r($ob->attributes, true) : 'null'));
+                Yii::trace('actionValidate() : find['.$v[$this->pk].'] = ' . ($ob ? print_r($ob->attributes, true) : 'null'));
             }
             if( $ob === null ) {
                 $ob = $model;
-                Yii::info('actionValidate() : new model');
+                Yii::trace('actionValidate() : new model');
+            }
+            foreach($this->defaultattributes As $k1=>$v1) {
+                $ob->$k1 = $v1;
+            }
+            if( $this->scenario !== null ) {
+                $ob->scenario = $this->scenario;
             }
             $ob->load($v, '');
             $ob->validate();
@@ -90,7 +106,7 @@ class MultirowsBehavior extends Behavior {
                 $result[Html::getInputId($ob, "[$k]" . $attribute)] = $errors;
             }
         }
-//        Yii::info('actionValidate('.$id.'): return ' . print_r($result, true));
+//        Yii::trace('actionValidate('.$id.'): return ' . print_r($result, true));
         return $result;
 
     }
@@ -105,7 +121,7 @@ class MultirowsBehavior extends Behavior {
             if( isset($a[$sForm][$this->excludeRowsField]) ) {
                 foreach($a[$sForm][$this->excludeRowsField] As $v) {
                     if( isset($a[$sForm][$v]) ) {
-                        Yii::info('Unlink a['.$sForm.'][' . $v . '] = ' . print_r($a[$sForm][$v], true));
+                        Yii::trace('Unlink a['.$sForm.'][' . $v . '] = ' . print_r($a[$sForm][$v], true));
                         unset($a[$sForm][$v]);
                     }
                 }
@@ -113,17 +129,23 @@ class MultirowsBehavior extends Behavior {
             }
         }
 
-//        Yii::info('actionValidate('.$id.') : [2] a = ' . print_r($a, true));
+//        Yii::trace('actionValidate('.$id.') : [2] a = ' . print_r($a, true));
         $result = [];
 
         foreach ($a[$sForm] as $k => $v) {
+            foreach($this->defaultattributes As $k1=>$v1) {
+                $model->$k1 = $v1;
+            }
+            if( $this->scenario !== null ) {
+                $model->scenario = $this->scenario;
+            }
             $model->load($v, '');
             $model->validate();
             if( $model->hasErrors() ) {
                 $result[$k] = $model->getErrors();
             }
         }
-//        Yii::info('actionValidate('.$id.'): return ' . print_r($result, true));
+//        Yii::trace('actionValidate('.$id.'): return ' . print_r($result, true));
         return ['data' => $a[$sForm], 'error' => $result];
 
     }
