@@ -13,6 +13,7 @@ use yii\base\Behavior;
 use yii\helpers\Html;
 
 /**
+ *
  * Class MultirowsBehavior
  * @package mosedu\multirows
  *

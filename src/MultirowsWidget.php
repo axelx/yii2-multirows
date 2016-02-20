@@ -142,9 +142,18 @@ class MultirowsWidget extends Widget
 
         // Добавляем пустую модель, которую будем выводить в невидую строку и по которой будем клонировать новые строки
         $ob = new $this->model;
-        if (!empty($this->defaultattributes)) {
-            $ob->attributes = $this->defaultattributes;
+        if ( !empty($this->scenario) ) {
+            $ob->scenario = $this->scenario;
         }
+        if (!empty($this->defaultattributes)) {
+            // это, чтобы scenario не влияло на назначение атрибутов скопом
+            // поэтому назначаем по одному персонально
+            foreach($this->defaultattributes As $k=>$v) {
+                $ob->$k = $v;
+            }
+        }
+
+//        \Yii::trace(self::className() . ' ob->scenario = ' . $ob->scenario . ' ' . print_r($ob->attributes, true) . "\ndefaultattributes = " . print_r($this->defaultattributes, true));
         $aData = array_merge(array($ob), $this->records);
 
         $sBaseModelName = $ob->formName();
@@ -159,10 +168,10 @@ class MultirowsWidget extends Widget
 
         $sRet = '';
         foreach ($aData As $k => $v) {
-//            \Yii::info('MultirowsWidget: print row ' . $k);
             if ( !empty($this->scenario) ) {
                 $v->scenario = $this->scenario;
             }
+//            \Yii::trace('MultirowsWidget: print row ' . $k);
 
             $aOpt = $this->tagOptions;
             if( $k == 0 ) {
