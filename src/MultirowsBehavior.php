@@ -84,7 +84,7 @@ class MultirowsBehavior extends Behavior {
 //        Yii::trace('actionValidate('.$id.') : [2] a = ' . print_r($a, true));
         $result = [];
 
-        if( isset($sForm) ) {
+        if( isset($a[$sForm]) ) {
             foreach ($a[$sForm] as $k => $v) {
                 $ob = null;
                 Yii::trace('actionValidate() : v = ' . print_r($v, true));
