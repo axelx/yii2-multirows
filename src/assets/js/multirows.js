@@ -2,6 +2,8 @@
  * MultirowsWidget jscript file.
  *
  * @author Victor Kozmin <promcalc@gmail.com>
+ *
+ *     todo: добавить максимальное количестов строк, чтобы нельзя было больше добавлять
  */
 
 function Multirow(param) {
@@ -35,7 +37,10 @@ function Multirow(param) {
             oLink
                 .attr("id", param.model + "_" + index + "_")
                 .on("click", function(event) {
-                    event.preventDefault
+                    event.preventDefault();
+                    if( (jQuery(rowSelector).length < 3) && !canDeleteLastRow ) {
+                        return false;
+                    }
                     var sId = jQuery(this).attr("id"),
                         formdata = obForm.data().yiiActiveForm,
                         settings = formdata['settings'],

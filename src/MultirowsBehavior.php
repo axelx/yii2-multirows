@@ -84,27 +84,29 @@ class MultirowsBehavior extends Behavior {
 //        Yii::trace('actionValidate('.$id.') : [2] a = ' . print_r($a, true));
         $result = [];
 
-        foreach ($a[$sForm] as $k => $v) {
-            $ob = null;
-            Yii::trace('actionValidate() : v = ' . print_r($v, true));
-            if( ($this->pk !== null) && isset($v[$this->pk]) ) {
-                $ob = $model->findOne($v[$this->pk]);
-                Yii::trace('actionValidate() : find['.$v[$this->pk].'] = ' . ($ob ? print_r($ob->attributes, true) : 'null'));
-            }
-            if( $ob === null ) {
-                $ob = $model;
-                Yii::trace('actionValidate() : new model');
-            }
-            foreach($this->defaultattributes As $k1=>$v1) {
-                $ob->$k1 = $v1;
-            }
-            if( $this->scenario !== null ) {
-                $ob->scenario = $this->scenario;
-            }
-            $ob->load($v, '');
-            $ob->validate();
-            foreach ($ob->getErrors() as $attribute => $errors) {
-                $result[Html::getInputId($ob, "[$k]" . $attribute)] = $errors;
+        if( isset($sForm) ) {
+            foreach ($a[$sForm] as $k => $v) {
+                $ob = null;
+                Yii::trace('actionValidate() : v = ' . print_r($v, true));
+                if( ($this->pk !== null) && isset($v[$this->pk]) ) {
+                    $ob = $model->findOne($v[$this->pk]);
+                    Yii::trace('actionValidate() : find['.$v[$this->pk].'] = ' . ($ob ? print_r($ob->attributes, true) : 'null'));
+                }
+                if( $ob === null ) {
+                    $ob = $model;
+                    Yii::trace('actionValidate() : new model');
+                }
+                foreach($this->defaultattributes As $k1=>$v1) {
+                    $ob->$k1 = $v1;
+                }
+                if( $this->scenario !== null ) {
+                    $ob->scenario = $this->scenario;
+                }
+                $ob->load($v, '');
+                $ob->validate();
+                foreach ($ob->getErrors() as $attribute => $errors) {
+                    $result[Html::getInputId($ob, "[$k]" . $attribute)] = $errors;
+                }
             }
         }
 //        Yii::trace('actionValidate('.$id.'): return ' . print_r($result, true));
