@@ -135,21 +135,23 @@ class MultirowsBehavior extends Behavior {
 //        Yii::trace('actionValidate('.$id.') : [2] a = ' . print_r($a, true));
         $result = [];
 
-        foreach ($a[$sForm] as $k => $v) {
-            foreach($this->defaultattributes As $k1=>$v1) {
-                $model->$k1 = $v1;
-            }
-            if( $this->scenario !== null ) {
-                $model->scenario = $this->scenario;
-            }
-            $model->load($v, '');
-            $model->validate();
-            if( $model->hasErrors() ) {
-                $result[$k] = $model->getErrors();
+        if( isset($a[$sForm]) ) {
+            foreach ($a[$sForm] as $k => $v) {
+                foreach($this->defaultattributes As $k1=>$v1) {
+                    $model->$k1 = $v1;
+                }
+                if( $this->scenario !== null ) {
+                    $model->scenario = $this->scenario;
+                }
+                $model->load($v, '');
+                $model->validate();
+                if( $model->hasErrors() ) {
+                    $result[$k] = $model->getErrors();
+                }
             }
         }
 //        Yii::trace('actionValidate('.$id.'): return ' . print_r($result, true));
-        return ['data' => $a[$sForm], 'error' => $result];
+        return ['data' => isset($a[$sForm]) ? $a[$sForm] : [], 'error' => $result];
 
     }
 
