@@ -38,7 +38,7 @@ function Multirow(param) {
                 .attr("id", param.model + "_" + index + "_")
                 .on("click", function(event) {
                     event.preventDefault();
-                    if( (jQuery(rowSelector).length < 3) && !canDeleteLastRow ) {
+                    if( (jQuery(rowSelector).length < 3) && !param.canDeleteLastRow ) {
                         return false;
                     }
                     var sId = jQuery(this).attr("id"),
